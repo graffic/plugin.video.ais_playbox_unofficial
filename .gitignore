@@ -1,0 +1,6 @@
+.env
+.swp
+
+# Python
+__pycache__/
+*.py[cod]

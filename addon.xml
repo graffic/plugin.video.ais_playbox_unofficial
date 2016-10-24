@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.ais_playbox_unofficial" name="AIS Playbox Unofficial" version="0.1.0" provider-name="graffic">
+  <requires>
+    <import addon="xbmc.python" version="2.24.0"/>
+    <import addon="script.module.requests" version="2.9.1"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">TV and video from AIS like playbox</summary>
+    <description lang="en">This plugins tries to emulate the AIS playbox functionality</description>
+    <platform>all</platform>
+    <license>Apache License 2.0</license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+	<source>https://github.com/graffic/</source>
+    <disclaimer>This add-on is a front end to the AIS video network. It is not an official AIS product. It only works for AIS subscribers.</disclaimer>
+	<assets>
+	  <icon>resources/icon.png</icon>
+	</assets>
+  </extension>
+</addon>
