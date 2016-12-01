@@ -27,7 +27,7 @@ def get_tv_channels():
 
 def map_channels(channels):
     final_list = []
-    for channel in get_tv_channels():
+    for channel in channels:
         list_item = xbmcgui.ListItem(label=channel['ItemName'])
         list_item.setArt({'thumb': channel['ItemIcon'],
                           'icon': channel['ItemIcon']})
