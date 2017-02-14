@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
 	<category label="97900">
-		<setting label="97901" type="text"   id="userId" default="" />
+		<setting label="97901" type="text" id="playboxMAC" default="" />
+		<setting label="97902" type="text" id="playboxSerial" default="" />
+		<setting label="97903" type="text" id="privateId" enable="false" />
+		<setting label="97904" type="text" id="userId" enable="false" />
 	</category>
 </settings>

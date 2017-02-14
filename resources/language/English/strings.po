@@ -21,5 +21,17 @@ msgid "AIS Settings"
 msgstr ""
 
 msgctxt "#97901"
-msgid "User id"
+msgid "Playbox MAC Address"
+msgstr ""
+
+msgctxt "#97902"
+msgid "Playbox Serial Number"
+msgstr ""
+
+msgctxt "#97903"
+msgid "Private ID"
+msgstr ""
+
+msgctxt "#97904"
+msgid "User ID"
 msgstr ""
