@@ -1,3 +1,9 @@
+"""
+AIS playbox TV addon for kodi.
+
+This Kodi addon allows you to play the free TV channels provided by the AIS
+playbox device.
+"""
 import json
 import random
 import re
@@ -26,6 +32,7 @@ plugin_handle = int(sys.argv[1])
 
 
 def get_tv_channels():
+    """Retrieve the current list of TV Channels"""
     response = requests.get(TV_CHANNELS, headers=HEADERS)
     data = json.loads(zlib.decompress(response.content, 16+zlib.MAX_WBITS))
     flatten = [item for x in data['SubPage'] for item in x['Items']]
@@ -34,6 +41,7 @@ def get_tv_channels():
 
 
 def map_channels(channels):
+    """Creates a xbmc list of playable TV channels"""
     final_list = []
     for channel in channels:
         list_item = xbmcgui.ListItem(label=channel['ItemName'])
@@ -48,6 +56,9 @@ def map_channels(channels):
 
 
 def get_channel_url(assetId):
+    """Request the final playable URL
+    This url contains a playlist with SQ and HQ streams.
+    """
     parameters = {
         'appId': 'AND',
         'assetId': assetId,
@@ -64,6 +75,7 @@ def get_channel_url(assetId):
 
 
 def play_channel(channel):
+    """Make kodi play a TV channel"""
     url = get_channel_url(channel)
     play_item = xbmcgui.ListItem("Channel")
     play_item.setPath(url)
@@ -73,6 +85,7 @@ def play_channel(channel):
 
 
 def generate_command_id(serial):
+    """AIS command ids"""
     timestamp = strftime('%m%d%Y%H%M%S')
     options = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     rand_ending = "".join([random.choice(options) for _ in range(4)])
@@ -80,6 +93,7 @@ def generate_command_id(serial):
 
 
 def get_device_owner(mac, serial):
+    """Gets the internal/private/email id of the device owner"""
     device_id = b64encode('n200|null|{0}|{1}'.format(mac, serial))
     command_id = generate_command_id(serial)
     parameters = {
@@ -91,6 +105,7 @@ def get_device_owner(mac, serial):
 
 
 def get_user_id_from_email(email):
+    """Converts the email/private id to the user id used in channels"""
     parameters = {
         'PrivateId': email,
         # Not needed but just in case
@@ -102,9 +117,7 @@ def get_user_id_from_email(email):
 
 
 def get_user_id():
-    """
-    Kodi Action to get AIS user id.
-    """
+    """Get and save AIS user id and email/private id."""
     mac = xbmcplugin.getSetting(plugin_handle, 'playboxMAC').strip().upper()
     if re.match('^([0-9A-F]{2}[:]){5}([0-9A-F]{2})$', mac) is None:
         xbmcgui.Dialog().ok('AIS', 'Wrong MAC address')
@@ -120,6 +133,7 @@ def get_user_id():
 
 
 def check_settings():
+    """Checks if there is a user id needed to play TV"""
     user_id = xbmcplugin.getSetting(plugin_handle, 'userId')
     if user_id:
         return
@@ -127,6 +141,7 @@ def check_settings():
 
 
 def router(paramstring):
+    """Decides what to do based on script parameters"""
     check_settings()
     params = dict(parse_qsl(paramstring))
     # Nothing to do yet with those
