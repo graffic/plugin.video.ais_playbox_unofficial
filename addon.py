@@ -22,6 +22,7 @@ AISWEB = "https://playbox.ais.co.th/AISWeb/"
 GET_DEVICE_OWNER = "https://stbbe.ais.co.th:8443/getDeviceOwner"
 TV_CHANNELS = "https://sifvideostore.s3.amazonaws.com/AIS/json/Page/NewTV.json.gz"
 GET_USER_ID = AISWEB + "ServiceGetUserIdFromPrivateId.aspx"
+GET_PACKAGES = AISWEB + "PageGetPackagesByUserID.aspx"
 CHECK_ENTITLEMENT = AISWEB + "ServiceCheckAssetEntitlementByUserId.aspx"
 PLAYBOX_APP_KEY = "UHgZAVpacCXP/spFoX+S7Pwt/sM="
 HEADERS = {
@@ -38,6 +39,26 @@ def get_tv_channels():
     flatten = [item for x in data['SubPage'] for item in x['Items']]
     unique = dict((i['ItemID'], i) for i in flatten).values()
     return sorted(unique, key=lambda item: item['ItemName'])
+
+
+def get_subscriber_packages(user_id):
+    """Asks for the packages the current subscriber has"""
+    parameters = {
+        'appId': 'AND',
+        'userId': user_id,
+        # Not needed but just in case
+        'appKey': PLAYBOX_APP_KEY}
+    data = {'JSONtext': json.dumps(parameters)}
+    res = requests.post(GET_PACKAGES, headers=HEADERS, data=data,
+                        verify=False)
+    return [p["ServiceID"] for p in res.json()["PackageInfo"]]
+
+
+def filter_channels(channels):
+    user_id = xbmcplugin.getSetting(plugin_handle, 'userId')
+    packages = set(get_subscriber_packages(user_id))
+    included = lambda cp: not packages.isdisjoint(cp.split('|'))
+    return [c for c in channels if included(c['Packages'])]
 
 
 def map_channels(channels):
@@ -139,6 +160,10 @@ def check_settings():
         return
     get_user_id()
 
+def refresh_packages():
+    user_id = xbmcplugin.getSetting(plugin_handle, 'userId')
+    packages = cache.cacheFunction(get_subscriber_packages, user_id)
+
 
 def router(paramstring):
     """Decides what to do based on script parameters"""
@@ -147,7 +172,7 @@ def router(paramstring):
     # Nothing to do yet with those
     if not params:
         # Demo channel list
-        channels = map_channels(get_tv_channels())
+        channels = map_channels(filter_channels(get_tv_channels()))
         xbmcplugin.addDirectoryItems(plugin_handle, channels, len(channels))
         xbmcplugin.addSortMethod(
                 plugin_handle, xbmcplugin.SORT_METHOD_LABEL_IGNORE_THE)
