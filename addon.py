@@ -20,7 +20,7 @@ from urlparse import parse_qsl
 AISWEB = "https://playbox.ais.co.th/AISWeb/"
 # Without SSL GET_DEVICE_OWNER = "http://stbbe.ais.co.th:8080/getDeviceOwner"
 GET_DEVICE_OWNER = "https://stbbe.ais.co.th:8443/getDeviceOwner"
-TV_CHANNELS = "https://sifvideostore.s3.amazonaws.com/AIS/json/Page/NewTV.json.gz"
+TV_CHANNELS = "https://sifsecretstore.s3.amazonaws.com/AIS/json/Page/NewTV.json.gz"
 GET_USER_ID = AISWEB + "ServiceGetUserIdFromPrivateId.aspx"
 GET_PACKAGES = AISWEB + "PageGetPackagesByUserID.aspx"
 CHECK_ENTITLEMENT = AISWEB + "ServiceCheckAssetEntitlementByUserId.aspx"
